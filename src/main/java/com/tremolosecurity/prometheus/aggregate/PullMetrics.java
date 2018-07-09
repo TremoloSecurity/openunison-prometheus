@@ -102,9 +102,13 @@ public class PullMetrics {
                     method.addHeader("Authorization", header.toString());
                 }
 
+                long beginTime=0;
+                long endTime = 0;
                 HttpResponse resp = null;
                 try {
+                    beginTime = System.currentTimeMillis();
                     resp = httpclient.execute(method);
+                    endTime = System.currentTimeMillis();
                 } catch (Throwable t) {
                     logger.error("Could not pull metrics from " + url.getUrl(),t);
                     
@@ -115,7 +119,7 @@ public class PullMetrics {
                     if (resp == null || resp.getStatusLine().getStatusCode() != 200) {
                         writeFailure(writer, url);
                     } else {
-                        pullUrlResults(writer, url, resp);
+                        pullUrlResults(writer, url, resp,endTime-beginTime);
                     }
 
 
@@ -156,7 +160,7 @@ public class PullMetrics {
                         writer.write('\n');
 	}
 
-	private void pullUrlResults(Writer writer, AggregateURL url, HttpResponse resp) throws IOException {
+	private void pullUrlResults(Writer writer, AggregateURL url, HttpResponse resp,long runTimeMillis) throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
                     String line = null;
                     while ((line = in.readLine()) != null) {
@@ -212,6 +216,21 @@ public class PullMetrics {
                     writeEscapedLabelValue(writer, url.getIpAddress());
                     writer.write("\"} ");
                     writer.write("1.0");
+                    writer.write('\n');
+
+                    writer.write("# HELP unison_scrape_request_time Determines how long in milliseconds the probe took\n");
+                    writer.write("# TYPE unison_scrape_request_time gauge\n");
+                    writer.write("unison_scrape_request_time");
+                    writer.write("{");
+                    writer.write(url.getClusterLabel());
+                    writer.write("=\"");
+                    writeEscapedLabelValue(writer, url.getCluster());
+                    writer.write("\",");
+                    writer.write(url.getIpLabel());
+                    writer.write("=\"");
+                    writeEscapedLabelValue(writer, url.getIpAddress());
+                    writer.write("\"} ");
+                    writeEscapedLabelValue(writer, Double.toString(runTimeMillis));
                     writer.write('\n');
 	}
 

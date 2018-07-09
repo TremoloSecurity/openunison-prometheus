@@ -3,7 +3,7 @@
   <parent>
     <groupId>com.tremolosecurity.unison</groupId>
     <artifactId>unison</artifactId>
-    <version>1.0.12</version>
+    <version>1.0.15</version>
   </parent>
   <artifactId>unison-prometheus</artifactId>
   <name>unison-prometheus</name>
@@ -23,13 +23,13 @@
 	<dependency>
 		<groupId>com.tremolosecurity.unison</groupId>
 		<artifactId>unison-server-core</artifactId>
-		<version>1.0.12</version>
+		<version>1.0.15</version>
     <scope>provided</scope>  
 	</dependency>
   	<dependency>
 		<groupId>com.tremolosecurity.unison</groupId>
 		<artifactId>unison-services-aws</artifactId>
-		<version>1.0.12</version>
+		<version>1.0.15</version>
     <scope>provided</scope>  
 	</dependency>
   		<dependency>
